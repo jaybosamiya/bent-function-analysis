@@ -138,6 +138,6 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
         | 0 -> F2.Zero
         | 1 -> F2.One
         | x -> f ((x mod 2) lxor (x / 2)) in
-      f (a <++> b)
+      f (a <&&> b)
   end
 end
