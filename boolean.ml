@@ -72,6 +72,9 @@ module type t_f2n = sig
 
   val all_boolvec : unit -> t list
   val all_func : unit -> (t -> f2) list
+
+  val walsh_hadamard_transform : (t -> f2) -> (t -> int)
+  val is_bent : (t -> f2) -> bool
 end
 
 module F2N ( N : sig val n : int end ) : t_f2n = struct
@@ -191,8 +194,30 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       List.map ~f:Int.to_string |>
       List.map ~f:F2.parse |>
       List.map ~f:(fun x -> Option.value_exn x) in
-    List.range 1 (1 lsl (1 lsl n)) |>
+    List.range 0 (1 lsl (1 lsl n)) |>
     List.map ~f:to_f2list |>
     List.map ~f:func_of_f2list_exn
+
+  let walsh_hadamard_transform f : (t -> int) =
+    let open F2.Infix in
+    let open Infix in
+    (fun y ->
+       all_boolvec () |>
+       List.map ~f:(fun x -> (x <..> y) <+> (f x)) |>
+       List.map ~f:(fun z -> match z with
+           | F2.Zero -> 1
+           | F2.One -> -1) |>
+       List.fold ~init:0 ~f:(+)
+    )
+
+  let is_bent f : bool =
+    if n mod 2 = 1
+    then raise (Failure "Can check bent only for even n")
+    else
+      let wf = walsh_hadamard_transform f in
+      let z = 1 lsl (n/2) in
+      all_boolvec () |>
+      List.for_all ~f:(fun y ->
+          Int.abs (wf y) = z)
 
 end

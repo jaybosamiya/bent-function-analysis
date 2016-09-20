@@ -56,6 +56,9 @@ module type t_f2n = sig
   (** Generates list of all boolean functions which take
       input size n *)
   val all_func : unit -> (t -> f2) list
+
+  val walsh_hadamard_transform : (t -> f2) -> (t -> int)
+  val is_bent : (t -> f2) -> bool
 end
 
 (** Generates a [f2n] module that can then be used normally.
