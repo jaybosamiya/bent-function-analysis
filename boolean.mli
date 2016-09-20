@@ -23,6 +23,7 @@ type f2 = F2.t
 (** F_2^n for general n *)
 module type t_f2n = sig
   type t
+  val n : int
 
   (** A boolean vector goes x_1, ..., x_n *)
   val parse_boolvec : string -> t option

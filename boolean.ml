@@ -49,6 +49,7 @@ type f2 = F2.t
 
 module type t_f2n = sig
   type t
+  val n : int
 
   val parse_boolvec : string -> t option
   val parse_func : string -> (t -> f2) option
