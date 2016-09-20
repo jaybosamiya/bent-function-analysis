@@ -166,6 +166,15 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     List.map ~f
 
   let all_func () : (t -> f2) list =
+    let to_f2list v =
+      let rec f n b =
+        if n = 0
+        then []
+        else b mod 2 :: f (n-1) (b/2) in
+      List.rev (f (1 lsl n) v) |>
+      List.map ~f:Int.to_string |>
+      List.map ~f:F2.parse |>
+      List.map ~f:(fun x -> Option.value_exn x) in
     List.range 1 (1 lsl (1 lsl n)) |>
     List.map ~f:to_f2list |>
     List.map ~f:func_of_f2list_exn
