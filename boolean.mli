@@ -35,6 +35,10 @@ module type t_f2n = sig
   val of_f2list : f2 list -> t option
   val to_f2list : t -> f2 list
 
+  val func_of_f2list_exn : f2 list -> (t -> f2)
+  val func_of_f2list : f2 list -> (t -> f2) option
+  val func_to_f2list : (t -> f2) -> f2 list
+
   module Infix : sig
     (** Element-wise And *)
     val (<&&>) : t -> t -> t
@@ -45,6 +49,13 @@ module type t_f2n = sig
     (** Dot product of 2 vectors *)
     val (<..>) : t -> t -> F2.t
   end
+
+  (** Generates list of all boolean vectors of size n *)
+  val all_boolvec : unit -> t list
+
+  (** Generates list of all boolean functions which take
+      input size n *)
+  val all_func : unit -> (t -> f2) list
 end
 
 (** Generates a [f2n] module that can then be used normally.

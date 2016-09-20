@@ -44,11 +44,18 @@ module type t_f2n = sig
   val of_f2list : f2 list -> t option
   val to_f2list : t -> f2 list
 
+  val func_of_f2list_exn : f2 list -> (t -> f2)
+  val func_of_f2list : f2 list -> (t -> f2) option
+  val func_to_f2list : (t -> f2) -> f2 list
+
   module Infix : sig
     val (<&&>) : t -> t -> t
     val (<++>) : t -> t -> t
     val (<..>) : t -> t -> F2.t
   end
+
+  val all_boolvec : unit -> t list
+  val all_func : unit -> (t -> f2) list
 end
 
 module F2N ( N : sig val n : int end ) : t_f2n = struct
@@ -140,4 +147,27 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
         | x -> f ((x mod 2) lxor (x / 2)) in
       f (a <&&> b)
   end
+
+  let all_boolvec () : t list =
+    List.range 0 (1 lsl n)
+
+  let func_of_f2list xs : (t -> f2) option =
+    if List.length xs = 1 lsl n
+    then Some (fun n -> List.nth_exn xs n)
+    else None
+
+  let func_of_f2list_exn xs : (t -> f2) =
+    match func_of_f2list xs with
+    | Some x -> x
+    | None -> raise (Failure "Wrong length")
+
+  let func_to_f2list (f : t -> f2) : f2 list =
+    List.range 0 (1 lsl n) |>
+    List.map ~f
+
+  let all_func () : (t -> f2) list =
+    List.range 1 (1 lsl (1 lsl n)) |>
+    List.map ~f:to_f2list |>
+    List.map ~f:func_of_f2list_exn
+
 end
