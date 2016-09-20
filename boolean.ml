@@ -107,7 +107,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
            | [] -> 0
            | F2.Zero :: xs -> 2 * (f xs)
            | F2.One :: xs -> 2 * (f xs) + 1 in
-      Some (f xs)
+      Some (f (List.rev xs))
     else None
 
   let of_f2list_exn xs =
