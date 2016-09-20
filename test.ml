@@ -3,14 +3,14 @@ open Core_kernel.Std
 open Boolean
 
 let () =
+  let open F2 in
   let module F2N = F2N ( struct let n = 3 end ) in
-  let open F2.Infix in
-  let v =
-    match In_channel.(input_all stdin) |>
-          String.strip |>
-          F2N.parse_func with
-    | None -> eprintf "Problemo\n"; assert false
-    | Some x -> x (Option.value_exn (F2N.parse_boolvec "000")) in
-  v <+> F2.One |>
-  F2.print |>
-  print_string
+  let open F2N.Infix in
+  let a = F2N.of_f2list_exn [One; One; Zero] in
+  let b = F2N.of_f2list_exn [Zero; One; One] in
+  let c = a <..> b in
+  let a, b, c = F2N.print_boolvec a, F2N.print_boolvec b,
+                F2.print c in
+  print_endline a;
+  print_endline b;
+  print_endline c
