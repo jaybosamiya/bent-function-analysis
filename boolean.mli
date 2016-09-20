@@ -10,7 +10,10 @@ module F2 : sig
   val print : t -> string
 
   module Infix : sig
+    (** Logical AND *)
     val (<&>) : t -> t -> t
+
+    (** Logical XOR *)
     val (<+>) : t -> t -> t
   end
 end
