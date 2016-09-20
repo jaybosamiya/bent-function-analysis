@@ -27,6 +27,22 @@ module F2 = struct
       | (One, Zero) | (Zero, One) -> One
       | _ -> Zero
   end
+
+  let to_int x =
+    match x with
+    | Zero -> 0
+    | One -> 1
+
+  let of_int x =
+    match x with
+    | 0 -> Some Zero
+    | 1 -> Some One
+    | _ -> None
+
+  let of_int_exn x =
+    match of_int x with
+    | Some x -> x
+    | None -> raise (Failure "Not boolean")
 end
 
 type f2 = F2.t
