@@ -5,3 +5,6 @@ test.native : boolean.ml boolean.mli test.ml
 
 entropy.native : boolean.ml boolean.mli entropy.ml
 	corebuild -pkg zarith entropy.native
+
+clean :
+	rm -rf _build/ *.native
