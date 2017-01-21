@@ -70,6 +70,15 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
 
   let two = Z.of_int 2
 
+
+  let all_boolvec () : t list =
+    let rec f i : t list =
+      if i = Z.(one lsl n)
+      then []
+      else i :: f Z.(i + one)
+    in
+    f Z.zero
+
   let rec boolstr_to_Zt chrs : Z.t =
     match chrs with
     | [] -> Z.zero
@@ -108,8 +117,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     String.concat
 
   let print_func (f:t -> f2) : string =
-    List.range 0 (1 lsl n) |>
-    List.map ~f:Z.of_int |>
+    all_boolvec () |>
     List.map ~f |>
     List.map ~f:F2.print |>
     String.concat
@@ -153,14 +161,6 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       then F2.Zero
       else F2.One
   end
-
-  let all_boolvec () : t list =
-    let rec f i : t list =
-      if i = Z.(one lsl n)
-      then []
-      else i :: f Z.(i + one)
-    in
-    f Z.zero
 
   let func_of_f2list xs : (t -> f2) option =
     if List.length xs = 1 lsl n
