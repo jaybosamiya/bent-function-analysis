@@ -70,10 +70,11 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
 
   let two = Z.of_int 2
 
+  let num_boolvec = Z.(one lsl n)
 
   let all_boolvec () : t list =
     let rec f i : t list =
-      if i = Z.(one lsl n)
+      if i = num_boolvec
       then []
       else i :: f Z.(i + one)
     in
@@ -94,7 +95,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
 
   let parse_func str : (t -> f2) option =
     let fans =
-      if String.length str = 1 lsl n (* str has length 2^n *)
+      if String.length str = Z.to_int num_boolvec (* str has length 2^n *)
       then try Some (List.map (String.to_list str) ~f:(function
           | '0' -> F2.Zero
           | '1' -> F2.One
@@ -163,7 +164,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
   end
 
   let func_of_f2list xs : (t -> f2) option =
-    if List.length xs = 1 lsl n
+    if List.length xs = Z.to_int num_boolvec
     then Some (fun n -> List.nth_exn xs (Z.to_int n))
     else None
 
@@ -177,16 +178,21 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     List.map ~f
 
   let all_func () : (t -> f2) list =
-    let to_f2list v =
+    let to_f2list (v : Z.t) =
       let rec f n b =
-        if n = 0
+        if n = Z.zero
         then []
-        else b mod 2 :: f (n-1) (b/2) in
-      List.rev (f (1 lsl n) v) |>
-      List.map ~f:Int.to_string |>
+        else Z.(b mod two) :: f Z.(n-one) Z.(b/two) in
+      List.rev (f num_boolvec v) |>
+      List.map ~f:Z.to_string |>
       List.map ~f:F2.parse |>
       List.map ~f:(fun x -> Option.value_exn x) in
-    List.range 0 (1 lsl (1 lsl n)) |>
+    let rec all_after i =
+      if i = Z.(one lsl (to_int num_boolvec))
+      then []
+      else i :: all_after Z.(i + one)
+    in
+    all_after Z.zero |>
     List.map ~f:to_f2list |>
     List.map ~f:func_of_f2list_exn
 
