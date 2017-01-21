@@ -73,12 +73,11 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
   let num_boolvec = Z.(one lsl n)
 
   let all_boolvec () : t list =
-    let rec f i : t list =
-      if i = num_boolvec
-      then []
-      else i :: f Z.(i + one)
-    in
-    f Z.zero
+    let rec f i l : t list =
+      if Z.(i < zero)
+      then l
+      else f Z.(i - one) (i :: l) in
+    f Z.(num_boolvec - one) []
 
   let rec boolstr_to_Zt chrs : Z.t =
     match chrs with
