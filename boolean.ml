@@ -204,7 +204,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     List.map ~f:to_f2list |>
     List.map ~f:func_of_f2list_exn
 
-  let fast_walsh_hadamard_transform (f : t -> f2) : (t -> Z.t) =
+  let walsh_hadamard_transform (f : t -> f2) : (t -> Z.t) =
     let open F2.Infix in
     let open Infix in
     let f_list = all_boolvec () |>
@@ -222,9 +222,6 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
         c @ d in
     let wf_list = f f_list in
     (fun y -> List.nth_exn wf_list (Z.to_int y))
-
-  let walsh_hadamard_transform f : (t -> Z.t) =
-    fast_walsh_hadamard_transform f
 
   let is_bent f : bool =
     if n mod 2 = 1
