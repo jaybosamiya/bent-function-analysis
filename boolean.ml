@@ -68,11 +68,13 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
 
   exception Not_boolean
 
+  let two = Z.of_int 2
+
   let rec boolstr_to_Zt chrs : Z.t =
     match chrs with
     | [] -> Z.zero
-    | '0' :: xs -> Z.mul (Z.of_int 2) (boolstr_to_Zt xs)
-    | '1' :: xs -> Z.add (Z.mul (Z.of_int 2) (boolstr_to_Zt xs)) Z.one
+    | '0' :: xs -> Z.(two * (boolstr_to_Zt xs))
+    | '1' :: xs -> Z.(two * (boolstr_to_Zt xs) + one)
     | _ :: _ -> raise Not_boolean
 
   let parse_boolvec str : t option =
@@ -100,7 +102,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     let rec f n b =
       if n = 0
       then []
-      else (Z.rem b (Z.of_int 2)) :: f (n-1) (Z.div b (Z.of_int 2)) in
+      else Z.(b mod two) :: f (n-1) Z.(b / two) in
     List.rev (f n v) |>
     List.map ~f:Z.to_string |>
     String.concat
@@ -117,8 +119,8 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     then let rec f xs : t =
            match xs with
            | [] -> Z.zero
-           | F2.Zero :: xs -> Z.mul (Z.of_int 2) (f xs)
-           | F2.One :: xs -> Z.add (Z.mul (Z.of_int 2) (f xs)) Z.one in
+           | F2.Zero :: xs -> Z.(two * (f xs))
+           | F2.One :: xs -> Z.(two * (f xs) + one) in
       Some (f (List.rev xs))
     else None
 
@@ -131,7 +133,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     let rec f n b =
       if n = 0
       then []
-      else Z.(b mod (of_int 2)) :: f (n-1) Z.(b / (of_int 2)) in
+      else Z.(b mod two) :: f (n-1) Z.(b / two) in
     List.rev (f n v) |>
     List.map ~f:Z.to_string |>
     List.map ~f:F2.parse |>
@@ -212,9 +214,10 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     then raise (Failure "Can check bent only for even n")
     else
       let wf = walsh_hadamard_transform f in
-      let z = 1 lsl (n/2) in
+      let nbytwo = n / 2 in
+      let z = Z.(one lsl nbytwo) in
       all_boolvec () |>
       List.for_all ~f:(fun y ->
-          Z.abs (wf y) = Z.of_int z)
+          Z.abs (wf y) = z)
 
 end
