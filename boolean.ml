@@ -188,11 +188,11 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       List.map ~f:F2.parse |>
       List.map ~f:(fun x -> Option.value_exn x) in
     let rec all_until i l =
-      if i = Z.zero
+      if i < Z.zero
       then l
       else all_until Z.(i - one) (i :: l)
     in
-    all_until Z.(one lsl (to_int num_boolvec)) [] |>
+    all_until Z.(one lsl (to_int num_boolvec) - one) [] |>
     List.map ~f:to_f2list |>
     List.map ~f:func_of_f2list_exn
 
