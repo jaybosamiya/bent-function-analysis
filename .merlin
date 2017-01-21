@@ -1,3 +1,4 @@
 PKG core_kernel
+PKG zarith
 
 B _build
