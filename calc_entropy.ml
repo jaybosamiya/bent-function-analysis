@@ -32,5 +32,4 @@ let () =
       print_int l;
       print_newline ()
     | Some f ->
-      print_int n; print_newline ();
       hadamard_entropy f |> Float.to_string |> print_endline
