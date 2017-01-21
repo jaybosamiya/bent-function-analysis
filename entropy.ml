@@ -13,7 +13,7 @@ let hadamard_entropy (f : f2n -> f2) : float =
   let two_pow_n = Float.of_int (1 lsl F2N.n) in
   let probs = F2N.all_boolvec () |>
               List.map ~f:(fun y ->
-                  let wfy = wf y in
+                  let wfy = Z.to_int (wf y) in
                   let wfy = Float.of_int wfy in
                   let wfy = wfy /. two_pow_n in
                   wfy *. wfy) in

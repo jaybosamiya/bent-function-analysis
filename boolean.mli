@@ -61,7 +61,7 @@ module type t_f2n = sig
       input size n *)
   val all_func : unit -> (t -> f2) list
 
-  val walsh_hadamard_transform : (t -> f2) -> (t -> int)
+  val walsh_hadamard_transform : (t -> f2) -> (t -> Z.t)
   val is_bent : (t -> f2) -> bool
 end
 

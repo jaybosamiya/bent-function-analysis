@@ -74,7 +74,7 @@ module type t_f2n = sig
   val all_boolvec : unit -> t list
   val all_func : unit -> (t -> f2) list
 
-  val walsh_hadamard_transform : (t -> f2) -> (t -> int)
+  val walsh_hadamard_transform : (t -> f2) -> (t -> Z.t)
   val is_bent : (t -> f2) -> bool
 end
 
@@ -218,7 +218,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     let wf_list = f f_list in
     (fun y -> List.nth_exn wf_list y)
 
-  let walsh_hadamard_transform f : (t -> int) =
+  let walsh_hadamard_transform f : (t -> Z.t) =
     let open F2.Infix in
     let open Infix in
     (fun y ->
@@ -227,7 +227,8 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
        List.map ~f:(fun z -> match z with
            | F2.Zero -> 1
            | F2.One -> -1) |>
-       List.fold ~init:0 ~f:(+)
+       List.fold ~init:0 ~f:(+) |>
+       Z.of_int
     )
 
   let is_bent f : bool =
@@ -238,6 +239,6 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       let z = 1 lsl (n/2) in
       all_boolvec () |>
       List.for_all ~f:(fun y ->
-          Int.abs (wf y) = z)
+          Z.abs (wf y) = Z.of_int z)
 
 end
