@@ -1,6 +1,6 @@
 BUILD=corebuild -pkg zarith
 
-all : test.native entropy.native calc_entropy.native
+all : test.native entropy.native calc_entropy.native gen_bent.native
 
 %.native : %.ml boolean.ml boolean.mli
 	$(BUILD) $@
