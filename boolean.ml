@@ -103,7 +103,8 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       else None in
     match fans with
     | Some fans ->
-      Some (fun n -> List.nth_exn fans (Z.to_int n))
+      let fans = Array.of_list fans in
+      Some (fun n -> fans.(Z.to_int n))
     | None ->
       None
 
@@ -164,7 +165,10 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
 
   let func_of_f2list xs : (t -> f2) option =
     if List.length xs = Z.to_int num_boolvec
-    then Some (fun n -> List.nth_exn xs (Z.to_int n))
+    then begin
+      let xs = Array.of_list xs in
+      Some (fun n -> xs.(Z.to_int n))
+    end
     else None
 
   let func_of_f2list_exn xs : (t -> f2) =
@@ -212,7 +216,8 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
         let d = List.map2_exn a b ~f:(Z.sub) in
         c @ d in
     let wf_list = f f_list in
-    (fun y -> List.nth_exn wf_list (Z.to_int y))
+    let wf_arr = Array.of_list wf_list in
+    (fun y -> wf_arr.(Z.to_int y))
 
   let is_bent f : bool =
     if n mod 2 = 1
