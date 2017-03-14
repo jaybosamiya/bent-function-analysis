@@ -236,9 +236,8 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
     let wf = walsh_hadamard_transform f in
     let probs = all_boolvec () |>
                 List.map ~f:(fun y ->
-                    let wfy = Z.to_int (wf y) in
-                    let wfy = Float.of_int wfy in
-                    wfy *. wfy) in
+                    let p = wf y |> Z.to_int |> Float.of_int in
+                    p *. p) in
     let sum_probs = List.fold ~init:0. ~f:(+.) probs in
     let probs = List.map ~f:(fun y -> y /. sum_probs) probs in
     List.fold probs ~init:0. ~f:(fun accum p ->
