@@ -203,21 +203,21 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
   let walsh_hadamard_transform (f : t -> f2) : (t -> Z.t) =
     let open F2.Infix in
     let open Infix in
-    let f_list = all_boolvec () |>
-                 List.map ~f |>
-                 List.map ~f:(fun x -> match x with
-                     | F2.Zero -> Z.one
-                     | F2.One -> Z.(-one)) in
+    let f_arr = all_boolvec () |>
+                Array.of_list |>
+                Array.map ~f |>
+                Array.map ~f:(fun x -> match x with
+                    | F2.Zero -> Z.one
+                    | F2.One -> Z.(-one)) in
     let rec f l =
-      let len = List.length l in
+      let len = Array.length l in
       if len = 1 then l else
-        let a = f (List.sub l ~pos:0 ~len:(len / 2)) in
-        let b = f (List.sub l ~pos:(len / 2) ~len:(len / 2)) in
-        let c = List.map2_exn a b ~f:(Z.add) in
-        let d = List.map2_exn a b ~f:(Z.sub) in
-        c @ d in
-    let wf_list = f f_list in
-    let wf_arr = Array.of_list wf_list in
+        let a = f (Array.sub l ~pos:0 ~len:(len / 2)) in
+        let b = f (Array.sub l ~pos:(len / 2) ~len:(len / 2)) in
+        let c = Array.map2_exn a b ~f:(Z.add) in
+        let d = Array.map2_exn a b ~f:(Z.sub) in
+        Array.append c d in
+    let wf_arr = f f_arr in
     (fun y -> wf_arr.(Z.to_int y))
 
   let is_bent f : bool =
