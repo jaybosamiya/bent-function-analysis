@@ -63,6 +63,8 @@ module type t_f2n = sig
 
   val walsh_hadamard_transform : (t -> f2) -> (t -> Z.t)
   val is_bent : (t -> f2) -> bool
+
+  val spectral_entropy : (t -> f2) -> float
 end
 
 (** Generates a [f2n] module that can then be used normally.

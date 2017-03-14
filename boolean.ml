@@ -60,6 +60,8 @@ module type t_f2n = sig
 
   val walsh_hadamard_transform : (t -> f2) -> (t -> Z.t)
   val is_bent : (t -> f2) -> bool
+
+  val spectral_entropy : (t -> f2) -> float
 end
 
 module F2N ( N : sig val n : int end ) : t_f2n = struct
@@ -229,5 +231,19 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       all_boolvec () |>
       List.for_all ~f:(fun y ->
           Z.abs (wf y) = z)
+
+  let spectral_entropy f : float =
+    let wf = walsh_hadamard_transform f in
+    let two_pow_n = Float.of_int (1 lsl n) in
+    let probs = all_boolvec () |>
+                List.map ~f:(fun y ->
+                    let wfy = Z.to_int (wf y) in
+                    let wfy = Float.of_int wfy in
+                    let wfy = wfy /. two_pow_n in
+                    wfy *. wfy) in
+    List.fold probs ~init:0. ~f:(fun accum p ->
+        if p = 0.
+        then accum
+        else accum -. (p *. log p)) /. log 2.
 
 end
