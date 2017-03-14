@@ -97,7 +97,7 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
   let parse_func str : (t -> f2) option =
     let fans =
       if String.length str = Z.to_int num_boolvec (* str has length 2^n *)
-      then try Some (List.map (String.to_list str) ~f:(function
+      then try Some (Array.map (String.to_array str) ~f:(function
           | '0' -> F2.Zero
           | '1' -> F2.One
           | _ -> raise Not_boolean))
@@ -105,7 +105,6 @@ module F2N ( N : sig val n : int end ) : t_f2n = struct
       else None in
     match fans with
     | Some fans ->
-      let fans = Array.of_list fans in
       Some (fun n -> fans.(Z.to_int n))
     | None ->
       None
